@@ -5,70 +5,50 @@ import community.communityBoard.dto.BoardPostDto;
 import community.communityBoard.service.BoardService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
-@RequestMapping("/boards")
+@RestController // 1. @Controller -> @RestController로 변경 (JSON 반환)
+@RequestMapping("/api/boards") // 관례상 API 경로는 /api를 붙이기도 합니다.
 @RequiredArgsConstructor
 public class BoardController {
 
     private final BoardService boardService;
 
-    //게시글 목록 조회 (초기 화면(http://localhost:8080/boards))
+    // 게시글 목록 조회 (GET http://localhost:8080/api/boards)
     @GetMapping
-    public String list(Model model) {
-        List<Board> boards = boardService.findBoards();
-        model.addAttribute("boards", boards);
-        return "boards/list";
+    public List<Board> list() {
+        return boardService.findBoards();
     }
 
-    //게시글 등록 폼 호출
-    @GetMapping("/new")
-    public String createBoardForm(Model model) {
-        model.addAttribute("boardPostDto", new BoardPostDto());
-        return "boards/createBoardForm";
-    }
-
-    //게시글 상세 조회
+    // 게시글 상세 조회 (GET http://localhost:8080/api/boards/1)
     @GetMapping("/{id}")
-    public String boardDetail(@PathVariable("id") Long id, Model model) {
+    public ResponseEntity<Board> boardDetail(@PathVariable("id") Long id) {
         Board board = boardService.findOne(id);
-        model.addAttribute("board", board);
-        return "boards/boardDetail";
+        return ResponseEntity.ok(board);
     }
 
-    //사용자가 글쓰기 화면에서 내용을 입력한 후 '등록하기' 버튼을 눌렀을 떄 실행
-    @PostMapping("/new")
-    public String postBoard(@Valid @ModelAttribute BoardPostDto boardPostDto, BindingResult result) {
+    // 게시글 등록 (POST http://localhost:8080/api/boards)
+    // Postman에서 Body -> raw -> JSON으로 데이터를 보내야 하므로 @RequestBody 사용
+    @PostMapping
+    public ResponseEntity<?> postBoard(@Valid @RequestBody BoardPostDto boardPostDto, BindingResult result) {
         if (result.hasErrors()) {
-            return "boards/createBoardForm";
+            return ResponseEntity.badRequest().body(result.getAllErrors());
         }
         boardService.createBoard(boardPostDto);
-        return "redirect:/boards";
+        return ResponseEntity.ok("게시글이 성공적으로 등록되었습니다.");
     }
 
-    //게시글 수정 폼 호출
-    @GetMapping("/{id}/edit")
-    public String updateBoardForm(@PathVariable("id") Long id, Model model){
-        Board board = boardService.findOne(id);
-        model.addAttribute("boardPostDto", new BoardPostDto(board));
-        model.addAttribute("id", id);
-        return "boards/updateBoardForm";
-    }
-
-    //게시글 수정
+    // 게시글 수정 (POST 또는 PUT http://localhost:8080/api/boards/1)
     @PostMapping("/{id}/edit")
-    public String updateBoard(@PathVariable("id") Long id, @Valid @ModelAttribute BoardPostDto boardPostDto, BindingResult result) {
+    public ResponseEntity<?> updateBoard(@PathVariable("id") Long id, @Valid @RequestBody BoardPostDto boardPostDto, BindingResult result) {
         if (result.hasErrors()) {
-            return "boards/updateBoardForm";
+            return ResponseEntity.badRequest().body(result.getAllErrors());
         }
         boardService.updateBoard(id, boardPostDto);
-        return "redirect:/boards/{id}";
+        return ResponseEntity.ok("게시글이 성공적으로 수정되었습니다.");
     }
-
 }
