@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>커뮤니티 게시판</title>
+</head>
+<body>
+<h1>게시글 목록</h1>
+
+<a th:href="@{/boards/new}"><button>글쓰기</button></a>
+<hr>
+
+<div th:if="${#lists.isEmpty(boards)}">
+    <p>등록된 게시글이 없습니다. 첫 번째 글을 작성해 보세요!</p>
+</div>
+
+<table th:if="${!#lists.isEmpty(boards)}" border="1">
+    <thead>
+    <tr>
+        <th>번호</th>
+        <th>제목</th>
+        <th>작성자</th>
+        <th>작성일</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="board : ${boards}">
+        <td th:text="${board.id}">1</td>
+        <td>
+            <a th:href="@{/boards/{id}(id=${board.id})}" th:text="${board.title}">제목</a>
+        </td>
+        <td th:text="${board.writer}">작성자</td>
+        <td th:text="${#temporals.format(board.regDate, 'yyyy-MM-dd HH:mm')}">2026-02-03</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

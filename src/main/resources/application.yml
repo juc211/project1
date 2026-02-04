@@ -1,0 +1,31 @@
+spring:
+  # 1. 데이터베이스 설정 (H2 DB 서버 모드 권장)
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/jpaboard
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  # 2. JPA/Hibernate 설정
+  jpa:
+    hibernate:
+      # create: 앱 실행 시 테이블 드롭 후 새로 생성 (학습용으로 최고)
+      # update: 변경된 부분만 반영 (실무 데이터 유지용)
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: true           # 콘솔에 실행 SQL 출력
+        format_sql: true         # SQL 가독성 좋게 출력
+        use_sql_comments: true   # 쿼리 설명 주석 추가
+        default_batch_fetch_size: 100 # N+1 문제 해결을 위한 최적화 옵션
+
+  # 3. 타임리프 설정 (화면 수정 시 바로 반영)
+  thymeleaf:
+    cache: false
+
+# 4. 로그 레벨 설정 (쿼리 파라미터 확인용)
+logging:
+  level:
+    org.hibernate.SQL: debug
+    # 쿼리의 '?' 자리에 어떤 값이 들어가는지 로그에 찍어줌
+    org.hibernate.orm.jdbc.bind: trace
