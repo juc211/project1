@@ -38,4 +38,9 @@ public class BoardService {
         return boardRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id = " + id));
     }
 
+    public void deleteBoard(Long id) {
+        Board board = boardRepository.findById(id)
+                .orElseThrow(()-> new IllegalArgumentException("삭제하려는 게시물이 없습니다 id = "+id));
+        boardRepository.delete(board);
+    }
 }
