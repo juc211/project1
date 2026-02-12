@@ -1,9 +1,10 @@
 package community.communityBoard.dto;
-
-import community.communityBoard.domain.Board;
+import community.communityBoard.entity.Board;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class BoardResponseDto {
     private Long id;
     private String title;

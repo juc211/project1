@@ -1,6 +1,6 @@
 package community.communityBoard.dto;
 
-import community.communityBoard.domain.Board;
+import community.communityBoard.entity.Board;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,10 +19,5 @@ public class BoardPostDto {
     @NotEmpty(message = "작성자 이름을 입력해주세요.")
     private String writer;
 
-    public BoardPostDto(Board board){
-        this.title = board.getTitle();
-        this.content = board.getContent();
-        this.writer = board.getWriter();
-    }
 
 }
