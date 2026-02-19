@@ -1,6 +1,6 @@
 package community.communityBoard.repository;
 
-import community.communityBoard.domain.Board;
+import community.communityBoard.entity.Board;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
