@@ -7,13 +7,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-//@RequestMapping
 @RequiredArgsConstructor
 public class CommentController {
 
@@ -23,13 +21,10 @@ public class CommentController {
      * 댓글 등록
      */
     @PostMapping("api/boards/{boardId}/comments")
-    public ResponseEntity<?> createComment(
-            @PathVariable("boardId") Long boardId, @Valid @RequestBody CommentRequestDto requestDto,
-            BindingResult result){
-        if(result.hasErrors()){
-            return ResponseEntity.badRequest().body(result.getAllErrors());
-        }
+    public ResponseEntity<String> createComment(
+            @PathVariable("boardId") Long boardId, @Valid @RequestBody CommentRequestDto requestDto){
         Long commentId = commentService.createComment(boardId, requestDto);
+
         //성공시 201 Created 반환
         return ResponseEntity.status(HttpStatus.CREATED).body(commentId + "번 댓글이 등록되었습니다.");
     }
@@ -49,11 +44,8 @@ public class CommentController {
      * 댓글 수정
      */
     @PatchMapping("/api/comments/{commentId}")
-    public ResponseEntity<?> updateComment(@PathVariable("commentId") Long commentId,
-                                                @Valid @RequestBody CommentRequestDto requestDto, BindingResult result){
-        if(result.hasErrors()){
-            return ResponseEntity.badRequest().body(result.getAllErrors());
-        }
+    public ResponseEntity<String> updateComment(
+            @PathVariable("commentId") Long commentId, @Valid @RequestBody CommentRequestDto requestDto){
         commentService.updateComment(commentId, requestDto);
 
         // 200 OK 반환
@@ -65,12 +57,8 @@ public class CommentController {
      */
     @DeleteMapping("/api/comments/{commentId}")
     public ResponseEntity<String> deleteComment(@PathVariable("commentId") Long commentId){
-        try{
             commentService.deleteComment(commentId);
-            return ResponseEntity.ok("댓글이 삭제되었습니다.");
-        } catch (IllegalArgumentException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+            return ResponseEntity.ok("댓글이 성공적으로 삭제되었습니다.");
     }
 
 }

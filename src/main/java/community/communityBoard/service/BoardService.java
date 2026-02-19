@@ -37,7 +37,9 @@ public class BoardService {
      */
     @Transactional
     public void updateBoard(Long id, BoardPostDto boardPostDto) {
-        Board board = boardRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 게시글이 없습니다. id = " + id));
+        // 검증 1. DB 존재 여부 확인
+        Board board = boardRepository.findById(id)
+                .orElseThrow(()-> new IllegalArgumentException("해당 게시글이 없습니다. id = " + id));
 
         //Dirty Checking
         board.updateTitle(boardPostDto.getTitle());
@@ -55,7 +57,10 @@ public class BoardService {
      * 게시판 상세 조회
      */
     public Board findOne(Long id){
-        return boardRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id = " + id));
+
+        //존재하지 않는 ID를 조회 시 에러를 던짐
+        return boardRepository.findById(id)
+                .orElseThrow(()-> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id = " + id));
     }
 
     /**
@@ -63,6 +68,8 @@ public class BoardService {
      */
     @Transactional
     public void deleteBoard(Long id) {
+
+        //삭제하려는 게시물이 없을 시 에러를 던짐
         Board board = boardRepository.findById(id)
                 .orElseThrow(()-> new IllegalArgumentException("삭제하려는 게시물이 없습니다 id = "+id));
         boardRepository.delete(board);

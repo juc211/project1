@@ -7,6 +7,7 @@ import lombok.Setter;
 
 @Getter @Setter
 @NoArgsConstructor
+//조회된 댓글 정보를 클라이언트에게 보여줄 때 사용
 public class CommentResponseDto {
 
     private Long id;

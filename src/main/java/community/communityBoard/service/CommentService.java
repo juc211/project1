@@ -44,6 +44,11 @@ public class CommentService {
      * 특정 게시글의 댓글 목록 조회
      */
     public List<CommentResponseDto> getCommentsByBoardId(Long boardId) {
+
+        // 게시글 존재 여부 확인
+        if (!boardRepository.existsById(boardId)) {
+            throw new IllegalArgumentException("존재하지 않는 게시글의 댓글을 조회할 수 없습니다. id=" + boardId);
+        }
         return commentRepository.findAllByBoardId(boardId).stream()
                 .map(CommentResponseDto::new)
                 .collect(Collectors.toList());
@@ -54,9 +59,12 @@ public class CommentService {
      */
     @Transactional
     public void updateComment(Long commentId, CommentRequestDto requestDto) {
+
+        //댓글 존재 여부 확인
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다. id=" + commentId));
 
+        //Dirty Checking
         comment.updateContent(requestDto.getContent());
     }
 
@@ -69,7 +77,6 @@ public class CommentService {
         // 댓글 존재 여부 확인
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다. id=" + commentId));
-
         commentRepository.delete(comment);
     }
 }

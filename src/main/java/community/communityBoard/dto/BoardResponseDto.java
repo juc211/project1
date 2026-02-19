@@ -3,20 +3,23 @@ import community.communityBoard.entity.Board;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
+// 서버가 클라이언트에게 게시글 정보를 보여줄 때 사용
 public class BoardResponseDto {
     private Long id;
     private String title;
     private String content;
     private String writer;
-    private String regDate; // 날짜를 문자열로 예쁘게 포맷팅해서 보낼 수 있음
+    private LocalDateTime regDate; // 날짜를 문자열로 포맷팅
 
     public BoardResponseDto(Board board) {
         this.id = board.getId();
         this.title = board.getTitle();
         this.content = board.getContent();
         this.writer = board.getWriter();
-        this.regDate = board.getRegDate().toString();
+        this.regDate = board.getRegDate();
     }
 }
