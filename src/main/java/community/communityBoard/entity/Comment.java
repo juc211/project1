@@ -15,24 +15,23 @@ public class Comment {
     private Long id;
 
     private String content;
-    private String writer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private Board board;
 
     @Builder
-    public Comment(String content, String writer, Board board){
+    public Comment(String content, Member member, Board board){
         this.content = content;
-        this.writer = writer;
+        this.member = member;
         this.board = board;
     }
 
     public void updateContent(String content) {
         this.content = content;
-    }
-
-    public void updateWriter(String writer) {
-        this.writer = writer;
     }
 }

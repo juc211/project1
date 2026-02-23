@@ -2,8 +2,10 @@ package community.communityBoard.service;
 
 import community.communityBoard.dto.BoardResponseDto;
 import community.communityBoard.entity.Board;
+import community.communityBoard.entity.Member;
 import community.communityBoard.dto.BoardPostDto;
 import community.communityBoard.repository.BoardRepository;
+import community.communityBoard.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,18 +19,23 @@ import java.util.stream.Collectors;
 public class BoardService {
 
     private final BoardRepository boardRepository;
+    private final MemberRepository memberRepository;
 
     /**
      * 게시판 등록
      */
     @Transactional // 메서드 레벨에서의 트랜잭션 설정 (더 우선순위로 쓰기 권한을 가짐)
-    public Long createBoard(BoardPostDto boardPostDto) {
+    public Long createBoard(BoardPostDto boardPostDto, Long memberId) {
+
+        // 작성자(Member) 조회
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 회원이 존재하지 않습니다. id = " + memberId));
 
         //빌더 패턴 적용
         Board board = Board.builder()
                 .title(boardPostDto.getTitle())
                 .content(boardPostDto.getContent())
-                .writer(boardPostDto.getWriter())
+                .member(member)
                 .build();
 
         return boardRepository.save(board).getId();

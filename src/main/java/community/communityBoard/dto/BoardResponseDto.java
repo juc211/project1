@@ -19,7 +19,7 @@ public class BoardResponseDto {
         this.id = board.getId();
         this.title = board.getTitle();
         this.content = board.getContent();
-        this.writer = board.getWriter();
+        this.writer = board.getMember().getNickname(); // Member 엔티티의 닉네임을 작성자로 사용
         this.regDate = board.getRegDate();
     }
 }
