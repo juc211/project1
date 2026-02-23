@@ -1,5 +1,6 @@
 package community.communityBoard.service;
 
+import community.communityBoard.dto.BoardResponseDto;
 import community.communityBoard.entity.Board;
 import community.communityBoard.dto.BoardPostDto;
 import community.communityBoard.repository.BoardRepository;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true) //클래스 레벨에서의 트랜잭션 설정 (읽기 전용)
@@ -49,15 +51,18 @@ public class BoardService {
     /**
      * 게시판 목록 조회
      */
-    public List<Board> findBoards() {
-        return boardRepository.findAll();
+    public List<BoardResponseDto> findBoards() {
+
+        
+        return boardRepository.findAll().stream()
+                .map(BoardResponseDto ::new)
+                .collect(Collectors.toList());
     }
 
     /**
      * 게시판 상세 조회
      */
     public Board findOne(Long id){
-
         //존재하지 않는 ID를 조회 시 에러를 던짐
         return boardRepository.findById(id)
                 .orElseThrow(()-> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id = " + id));
@@ -68,7 +73,6 @@ public class BoardService {
      */
     @Transactional
     public void deleteBoard(Long id) {
-
         //삭제하려는 게시물이 없을 시 에러를 던짐
         Board board = boardRepository.findById(id)
                 .orElseThrow(()-> new IllegalArgumentException("삭제하려는 게시물이 없습니다 id = "+id));

@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController // JSON 반환을 위한 @RestController
 @RequestMapping("/api/boards")
@@ -23,14 +22,8 @@ public class BoardController {
      * 게시글 목록 조회
      */
     @GetMapping
-    public ResponseEntity<List<BoardResponseDto>> list() {
-        List<Board> boards = boardService.findBoards();
-
-        // Stream을 사용하여 Board 엔티티 리스트를 DTO 리스트로 변환
-        List<BoardResponseDto> responseDto = boards.stream() // stream 생성
-                .map(BoardResponseDto::new) // .map(board -> new BoardResponseDto(board)) 와 같음 : 엔티티를 DTO 생성자에 넣어 변환
-                .collect(Collectors.toList()); // 리스트로 묶음
-        return ResponseEntity.ok(responseDto);
+    public ResponseEntity<List<BoardResponseDto>> getBoardList() {
+        return ResponseEntity.ok(boardService.findBoards());
     }
 
     /**
