@@ -14,9 +14,9 @@ public class CommentResponseDto {
     private String content;
     private String writer;
 
-    public CommentResponseDto(Comment comment ){
+    public CommentResponseDto(Comment comment) {
         this.id = comment.getId();
         this.content = comment.getContent();
-        this.writer = comment.getWriter();
+        this.writer = comment.getMember().getNickname();
     }
 }

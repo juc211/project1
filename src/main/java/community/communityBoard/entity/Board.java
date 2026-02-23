@@ -20,17 +20,18 @@ public class Board {
 
     private String title;
     private String content;
-    private String writer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     private LocalDateTime regDate = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments = new ArrayList<>();
-
     @Builder
-    private Board(String title, String content, String writer) {
+    private Board(String title, String content, Member member) {
         this.title = title;
         this.content = content;
-        this.writer = writer;
+        this.member = member;
     }
 
     public void updateTitle(String title) {
@@ -41,7 +42,4 @@ public class Board {
         this.content = content;
     }
 
-    public void updateWriter(String writer) {
-        this.writer = writer;
-    }
 }
