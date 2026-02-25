@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Null;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,15 +34,10 @@ public class Member {
         this.nickname = nickname;
     }
 
-    public void updateEmail(String email) {
-        this.email = email;
-    }
-
-    public void updatePassword(String password) {
-        this.password = password;
-    }
-
-    public void updateNickname(String nickname) {
+    public void updateInfo(String nickname, String password){
         this.nickname = nickname;
+        if(password != null && !password.isBlank()){
+            this.password = password;
+        }
     }
 }
