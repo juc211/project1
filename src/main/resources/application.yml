@@ -11,13 +11,16 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
+
     # show-sql은 hibernate 아래가 아니라 jpa 바로 아래에 적는 것이 스프링 부트 표준입니다.
     show-sql: true
+
     properties:
       hibernate:
         format_sql: true
         use_sql_comments: true
         default_batch_fetch_size: 100
+
     # MySQL 문법을 사용하도록 명시
     database-platform: org.hibernate.dialect.MySQLDialect
 
@@ -30,3 +33,9 @@ logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.orm.jdbc.bind: trace
+
+jwt:
+  header: Authorization
+  # HS512 알고리즘을 사용하기 위해 64바이트 이상의 랜덤 문자열 권장
+  secret: c3ByaW5nLWJvb3Qtc2VjdXJpdHktand0LXR1dG9yaWFsLXNlY3JldC1wcml2YXRlLWtleS02NC1ieXRlcwo=
+  expiration: 86400 # 토큰 만료 시간 (24시간)
