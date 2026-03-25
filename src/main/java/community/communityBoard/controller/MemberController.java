@@ -23,6 +23,7 @@ public class MemberController {
 
     /**
      * 회원 가입
+     * SecurityConfig에서 permitAll(); 로 설정되어있기 때문에 토큰없이 접근
      */
     @PostMapping("/signup")
     public ResponseEntity<String> join(@Valid @RequestBody MemberDto.JoinRequest dto) {
@@ -34,18 +35,10 @@ public class MemberController {
      * 로그인
      */
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody MemberDto.LoginRequest dto, HttpServletRequest request){
+    public ResponseEntity<MemberDto.LoginResponse> login(@RequestBody MemberDto.LoginRequest dto){
+        MemberDto.LoginResponse response = memberService.login(dto);
 
-        // 1. 서비스 호출로 검증
-        Member loginMember = memberService.login(dto.getEmail(), dto.getPassword());
-
-        // 2. 로그인 성공처리 : 세션 생성
-        HttpSession session = request.getSession();
-
-        // 3. 세션에 로그인 회원 정보 보관
-        session.setAttribute("loginMember", loginMember);
-
-        return ResponseEntity.ok("로그인 성공");
+        return ResponseEntity.ok(response);
     }
 
     /**
