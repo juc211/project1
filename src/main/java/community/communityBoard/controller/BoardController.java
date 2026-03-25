@@ -2,14 +2,13 @@ package community.communityBoard.controller;
 
 import community.communityBoard.dto.BoardDto;
 import community.communityBoard.entity.Board;
-import community.communityBoard.entity.Member;
+import community.communityBoard.security.CustomUserDetails;
 import community.communityBoard.service.BoardService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -41,19 +40,10 @@ public class BoardController {
      * 게시글 등록
      */
     @PostMapping
-    public ResponseEntity<String> postBoard(@Valid @RequestBody BoardDto.Request dto, HttpServletRequest request) {
-
-        // 세션에서 로그인 정보 가져오기
-        HttpSession session = request.getSession(false);
-        Member loginMember = (Member) session.getAttribute("loginMember");
-
-        // 로그인 체크
-        if(loginMember == null){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
-        }
-
+    public ResponseEntity<String> postBoard(@Valid @RequestBody BoardDto.Request dto,
+                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
         // 게시글 생성 및 등록
-        Long boardId = boardService.createBoard(dto, loginMember.getId());
+        Long boardId = boardService.createBoard(dto, userDetails.getMemberId());
         return ResponseEntity.status(HttpStatus.CREATED).body(boardId + "번 게시글이 성공적으로 등록되었습니다.");
     }
 
@@ -62,14 +52,11 @@ public class BoardController {
      */
     @PatchMapping("/{id}") //PostMapping -> patchMapping 변경으로 URL에 동작을 작성하지 않아도 의미 전달
     public ResponseEntity<String> updateBoard(
-            @PathVariable("id") Long id, @Valid @RequestBody BoardDto.Request boardPostDto, HttpServletRequest request) {
-
-        // 세션에서 로그인 정보 가져오기
-        HttpSession session = request.getSession(false);
-        Member loginMember = (Member) session.getAttribute("loginMember");
+            @PathVariable("id") Long id, @Valid @RequestBody BoardDto.Request dto,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         // 서비스 호출 시 세션에 저장된 유저의 ID를 함께 전달
-        boardService.updateBoard(id, boardPostDto, loginMember.getId());
+        boardService.updateBoard(id, dto, userDetails.getMemberId());
         return ResponseEntity.ok("게시글이 성공적으로 수정되었습니다.");
     }
 
@@ -77,13 +64,10 @@ public class BoardController {
      * 게시글 삭제
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteBoard(@PathVariable("id") Long id, HttpServletRequest request) {
+    public ResponseEntity<String> deleteBoard(@PathVariable("id") Long id,
+                                              @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        // 세션에서 로그인 정보 가져오기
-        HttpSession session = request.getSession(false);
-        Member loginMember = (Member) session.getAttribute("loginMember");
-
-        boardService.deleteBoard(id, loginMember.getId());
+        boardService.deleteBoard(id, userDetails.getMemberId());
         return ResponseEntity.ok("게시글이 성공적으로 삭제되었습니다.");
     }
 }

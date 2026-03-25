@@ -38,4 +38,4 @@ jwt:
   header: Authorization
   # HS512 알고리즘을 사용하기 위해 64바이트 이상의 랜덤 문자열 권장
   secret: c3ByaW5nLWJvb3Qtc2VjdXJpdHktand0LXR1dG9yaWFsLXNlY3JldC1wcml2YXRlLWtleS02NC1ieXRlcwo=
-  expiration: 86400 # 토큰 만료 시간 (24시간)
+  expiration: 86400000 # 토큰 만료 시간 (24시간)
