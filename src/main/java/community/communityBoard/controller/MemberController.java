@@ -2,13 +2,13 @@ package community.communityBoard.controller;
 
 import community.communityBoard.dto.MemberDto;
 import community.communityBoard.entity.Member;
+import community.communityBoard.security.CustomUserDetails;
 import community.communityBoard.service.MemberService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -45,16 +45,9 @@ public class MemberController {
      * 로그아웃
      */
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletRequest request) {
+    public ResponseEntity<String> logout() {
 
-        // 세션 호출
-        HttpSession session = request.getSession(false);
-
-        //세션 무효화-로그아웃 처리
-        if (session != null) {
-            session.invalidate();
-        }
-        return ResponseEntity.ok("로그아웃 성공");
+        return ResponseEntity.ok("로그아웃 성공 - 클라이언트에서 토큰 삭제");
     }
 
     /**
@@ -81,16 +74,10 @@ public class MemberController {
      * 회원 정보 수정 (로그인 한 본인)
      */
     @PatchMapping("/me")
-    public ResponseEntity<String> updateMember(@Valid @RequestBody MemberDto.UpdateRequest dto, HttpServletRequest request) {
+    public ResponseEntity<String> updateMember(@Valid @RequestBody MemberDto.UpdateRequest dto,
+                                               @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        // 1. 세션 호출
-        HttpSession session = request.getSession(false);
-
-        // 2. 세션에 저장된 로그인 정보 가져오기
-        Member loginMember = (Member) session.getAttribute("loginMember");
-
-        // 3. 로그인된 세션의 ID로 회원 정보 수정
-        memberService.update(loginMember.getId(), dto);
+        memberService.update(userDetails.getMemberId(), dto);
         return ResponseEntity.ok("회원 정보 수정 성공");
     }
 }
