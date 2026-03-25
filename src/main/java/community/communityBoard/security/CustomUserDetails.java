@@ -1,6 +1,7 @@
 package community.communityBoard.security;
 
 import community.communityBoard.entity.Member;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,7 +9,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-public class CustomUserDetail implements UserDetails {
+@Getter
+public class CustomUserDetails implements UserDetails {
 
     private final Long memberId;
     private final String email;
@@ -16,7 +18,7 @@ public class CustomUserDetail implements UserDetails {
     private final String nickname;
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public CustomUserDetail(Member member){
+    public CustomUserDetails(Member member){
         this.memberId = member.getId();
         this.email = member.getEmail();
         this.password = member.getPassword();
