@@ -20,6 +20,7 @@ public class CommentController {
 
     /**
      * 댓글 등록
+     * jwt 토큰 필요
      */
     @PostMapping("api/boards/{boardId}/comments")
     public ResponseEntity<String> createComment(
@@ -43,6 +44,7 @@ public class CommentController {
 
     /**
      * 댓글 수정
+     * jwt 토큰 필요
      */
     @PatchMapping("/api/comments/{commentId}")
     public ResponseEntity<String> updateComment(
@@ -56,6 +58,7 @@ public class CommentController {
 
     /**
      * 댓글 삭제
+     * jwt 토큰 필요
      */
     @DeleteMapping("/api/comments/{commentId}")
     public ResponseEntity<String> deleteComment(@PathVariable("commentId") Long commentId,

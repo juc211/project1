@@ -22,8 +22,6 @@ import java.util.Date;
  * 2. 토큰 복호화 : 토큰을 받아 사용자의 정보를 꺼낸다.
  * 3. 토큰 검증 : 토큰의 유효기간이 지나지 않았는지 위조된 토큰이 아닌지 검증
  */
-
-
 @Component
 public class JwtTokenProvider {
 
@@ -41,6 +39,9 @@ public class JwtTokenProvider {
         this.userDetailsService = userDetailsService;
     }
 
+    /**
+     * 토큰 생성 메서드
+     */
     public String createToken(String email) {
         Date now = new Date();                              // 현재 시간
         Date expiry = new Date(now.getTime() + expirationTime); // 만료 시간
@@ -53,19 +54,6 @@ public class JwtTokenProvider {
                 .compact();           // 최종 JWT 문자열로 직렬화
     }
 
-    /**
-     *
-     * 추가!!!!!!!!!!!!!!!!!!!!!!!!!!!! 자료랑 다름 비교 필요 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     *
-     */
-    public Authentication getAuthentication(String token) {
-        String email = getEmailFromToken(token);
-
-        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
-
-    }
-
     public String getEmailFromToken(String token) {
         return Jwts.parser()
                 .verifyWith(secretKey)       // 서명 검증에 사용할 키 설정
@@ -75,6 +63,23 @@ public class JwtTokenProvider {
                 .getSubject();               // "sub" 클레임 (= 이메일) 반환
     }
 
+    /**
+     * 인증 정보 추출 메서드
+     */
+    public Authentication getAuthentication(String token) {
+        // 1. 토큰에서 이메일 추출
+        String email = getEmailFromToken(token);
+
+        // 2. 이메일로 유저 정보 로드 (CustomUserDetailService 호출)
+        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+
+        // 3. 스프링 시큐리티 인증 토큰 생성 (비밀번호는 이미 검증되었으므로 빈 문자열)
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+    }
+
+    /**
+     * 토큰 유효성 검사 메서드
+     */
     public boolean validateToken(String token) {
         try {
             // 토큰 파싱 시도 → 서명 검증 + 만료 확인이 자동으로 수행됨

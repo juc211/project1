@@ -2,6 +2,7 @@ package community.communityBoard.service;
 
 import community.communityBoard.dto.MemberDto;
 import community.communityBoard.entity.Member;
+import community.communityBoard.entity.constant.Role;
 import community.communityBoard.jwt.JwtTokenProvider;
 import community.communityBoard.repository.MemberRepository;
 import community.communityBoard.security.CustomUserDetails;
@@ -41,6 +42,7 @@ public class MemberService {
                 //비밀번호 암호화 : PasswordEncoder 도입
                 .password(passwordEncoder.encode(dto.getPassword()))
                 .nickname(dto.getNickname())
+                .role(Role.USER)
                 .build();
         memberRepository.save(member);
         return member.getId();

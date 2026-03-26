@@ -38,6 +38,8 @@ public class BoardController {
 
     /**
      * 게시글 등록
+     * jwt 토큰 필요
+     * @AuthenticationPrincipal CustomUserDetails userDetails로 사용자 정보를 주입, jwt 토큰이 없을 시 security가 자동으로 401 에러 발생
      */
     @PostMapping
     public ResponseEntity<String> postBoard(@Valid @RequestBody BoardDto.Request dto,
@@ -49,8 +51,9 @@ public class BoardController {
 
     /**
      * 게시글 수정
+     * jwt 토큰 필요
      */
-    @PatchMapping("/{id}") //PostMapping -> patchMapping 변경으로 URL에 동작을 작성하지 않아도 의미 전달
+    @PatchMapping("/{id}")
     public ResponseEntity<String> updateBoard(
             @PathVariable("id") Long id, @Valid @RequestBody BoardDto.Request dto,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
@@ -62,6 +65,7 @@ public class BoardController {
 
     /**
      * 게시글 삭제
+     * jwt 토큰 필요.
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteBoard(@PathVariable("id") Long id,

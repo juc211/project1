@@ -43,6 +43,7 @@ public class MemberController {
 
     /**
      * 로그아웃
+     * 서버가 stateless이기 때문에 클라이언트에서 토큰을 삭제하는 방식으로 로그아웃
      */
     @PostMapping("/logout")
     public ResponseEntity<String> logout() {
@@ -72,6 +73,7 @@ public class MemberController {
 
     /**
      * 회원 정보 수정 (로그인 한 본인)
+     * jwt 토큰 필요
      */
     @PatchMapping("/me")
     public ResponseEntity<String> updateMember(@Valid @RequestBody MemberDto.UpdateRequest dto,
